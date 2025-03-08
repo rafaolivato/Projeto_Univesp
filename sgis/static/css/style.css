@@ -1,0 +1,193 @@
+body {
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #a8edea, #fed6e3);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.login-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    align-self: center; /* Adicionado */
+    margin-top: 250px; /* Adicionado */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    background-color: #f06292;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.navbar {
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+.navbar a:hover {
+    background-color: #fce4ec;
+}
+
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+.content h1 {
+    color: #333;
+}
+
+.content p {
+    color: #555;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.navbar a, .dropbtn { /* Alterado */
+    text-decoration: none;
+    color: #f06292;
+    padding: 10px 15px;
+    margin: 0 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    display: inline-flex; /* Adicionado */
+    align-items: center; /* Adicionado */
+}
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropbtn:hover {
+    background-color: #fce4ec;
+}
+
+.cadastro-container { /* Alterado o nome da classe */
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 600px; /* Aumentado o tamanho */
+    margin: 50px auto; /* Centralizado e adicionado margem */
+}
+
+.cadastro-button { /* Alterado o nome da classe */
+    background-color: #f06292;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px; /* Adicionado margem */
+}
+
+.form-fields p { /* Adicionado estilo para os parágrafos do formulário */
+    margin-bottom: 15px;
+}
+
+.form-fields label { /* Adicionado estilo para os labels do formulário */
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-fields input,
+.form-fields select,
+.form-fields textarea { /* Adicionado estilo para os inputs, selects e textareas do formulário */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.messages {
+    list-style: none;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.messages li {
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.home-button {
+    background-color: green;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.home-button:hover {
+    background-color: #e91e63;
+}
+

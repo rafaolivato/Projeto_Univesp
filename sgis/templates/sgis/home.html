@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Página Inicial</title>
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Cadastros</a>
+            <div class="dropdown-content">
+                <a href="{% url 'cadastrar_paciente' %}">Pacientes</a>
+                <a href="{% url 'cadastrar_produto' %}">Produtos</a>
+                <a href="{% url 'cadastrar_fabricante' %}">Fabricantes</a>
+            </div>
+        </div>
+        <a href="#">Entrada</a>
+        <a href="#">Dispensação</a>
+        <div class='dropdown'>
+            <a href="#" class='dropbtn'>Relatórios</a>
+            <div class='dropdown-content'>
+                <a href= "{% url 'listar_pacientes' %}">Pacientes</a>
+                <a href= "{% url 'listar_produtos' %}">Produtos</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h1>Bem-vindo à Página Inicial!</h1>
+        <p>Aqui você pode gerenciar suas operações.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+from django import forms
+from localflavor.br.forms import BRCPFField
+from .models import Paciente, Endereco
+
+class EnderecoForm(forms.ModelForm):
+    class Meta:
+        model = Endereco
+        fields = '__all__'
+
+class PacienteForm(forms.ModelForm):
+    cpf = BRCPFField()
+    data_nascimento = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    endereco = EnderecoForm() # instancia o form de endereço.
+
+    class Meta:
+        model = Paciente
+        fields = ['nome', 'cnes', 'cpf', 'data_nascimento', 'telefone']
+
+    def save(self, commit=True):
+        endereco_form = EnderecoForm(self.data)  # Cria uma instância do EnderecoForm com os dados do request
+        if endereco_form.is_valid():
+            endereco_obj = endereco_form.save() # Salva o endereço.
+            paciente = super().save(commit=False)
+            paciente.endereco = endereco_obj
+            if commit:
+                paciente.save()
+            return paciente
+        else:
+            raise ValueError("Formulário de endereço inválido") # Lança um erro caso o form de endereço seja invalido.
+        
+from django import forms
+from .models import Produto
+
+class ProdutoForm(forms.ModelForm):
+    validade = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+
+    class Meta:
+        model = Produto
+        fields = '__all__'
+
+from django import forms
+from .models import Fabricante
+
+class FabricanteForm(forms.ModelForm):
+    class Meta:
+        model = Fabricante
+        fields = '__all__'

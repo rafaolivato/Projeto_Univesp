@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listar Pacientes</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="content">
+        <h2>Listar Pacientes</h2>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <ul>
+            {% for paciente in pacientes %}
+                <li>{{ paciente.nome }} - Nascimento: {{ paciente.data_nascimento|date:"d/m/Y" }}</li>
+            {% endfor %}
+        </ul>
+        <br>
+        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+    </div>
+</body>
+</html>
