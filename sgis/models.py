@@ -11,8 +11,6 @@ class Endereco(models.Model):
     estado = models.CharField(max_length=2)
     cep = models.CharField(max_length=9)
 
-
-
 class Paciente(models.Model):
     nome = models.CharField(max_length=255, verbose_name="Nome Completo")
     cnes = models.CharField(max_length=15, blank=True, null=True)
@@ -33,16 +31,15 @@ class Fabricante(models.Model):
 class Produto(models.Model):
     descricao = models.CharField(max_length=255)
     apresentacao = models.CharField(max_length=50)
-    lote = models.CharField(max_length=50)
-    validade = models.DateTimeField()
     fabricante = models.ForeignKey(Fabricante, on_delete=models.CASCADE)
+    estoque = models.IntegerField(default=0) # Quantidade em estoque
     
 
     def __str__(self):
-        return self.nome
+        return self.descricao
 
 class Estoque(models.Model):
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='estoques')
     quantidade = models.IntegerField()
     ultima_atualizacao = models.DateTimeField(auto_now=True)
 
@@ -54,12 +51,19 @@ class Dispensacao(models.Model):
 
 class Fornecedor(models.Model):
     nome = models.CharField(max_length=250)
-    endereço = models.CharField(max_length=250)
+    cnpj = models.CharField(max_length=14)
+    endereco = models.CharField(max_length=250, verbose_name="Endereço")
     telefone = models.CharField(max_length=20)
+
+import datetime
 
 class EntradaEstoque(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    lote = models.CharField(max_length=50, blank=True, null=True)
+    validade = models.DateTimeField(default=datetime.datetime.now)
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
     data = models.DateField()
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+

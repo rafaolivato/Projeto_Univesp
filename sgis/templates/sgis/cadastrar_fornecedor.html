@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastrar Fornecedor</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="cadastro-container">
+        <h2>Cadastrar Fornecedor</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-fields">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="cadastro-button">Salvar</button>
+            <p>
+            <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+        </form>
+    </div>
+</body>
+</html>

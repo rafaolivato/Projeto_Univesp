@@ -34,9 +34,7 @@ from django import forms
 from .models import Produto
 
 class ProdutoForm(forms.ModelForm):
-    validade = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
+    
 
     class Meta:
         model = Produto
@@ -48,4 +46,33 @@ from .models import Fabricante
 class FabricanteForm(forms.ModelForm):
     class Meta:
         model = Fabricante
+        fields = '__all__'
+
+from django import forms
+from .models import EntradaEstoque
+
+class EntradaEstoqueForm(forms.ModelForm):
+    class Meta:
+        model = EntradaEstoque
+        fields = '__all__'
+        widgets = {
+            'validade': forms.DateTimeInput(attrs={'type': 'date'}),
+            'data': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+from django import forms
+from .models import Fornecedor
+
+class FornecedorForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = '__all__'
+
+
+from django import forms
+from .models import Dispensacao
+
+class DispensacaoForm(forms.ModelForm):
+    class Meta:
+        model = Dispensacao
         fields = '__all__'

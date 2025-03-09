@@ -97,3 +97,84 @@ def cadastrar_fabricante(request):
 def listar_fabricantes(request):
     fabricantes = Fabricante.objects.all()
     return render(request, 'sgis/listar_fabricantes.html', {'fabricantes': fabricantes})
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import FornecedorForm
+from .models import Fornecedor
+
+def cadastrar_fornecedor(request):
+    if request.method == 'POST':
+        form = FornecedorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Fornecedor cadastrado com sucesso!')
+            return redirect('listar_fornecedores')  # Redirecionar para a lista de fornecedores
+        else:
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
+    else:
+        form = FornecedorForm()
+    return render(request, 'sgis/cadastrar_fornecedor.html', {'form': form})
+
+def listar_fornecedores(request):
+    fornecedores = Fornecedor.objects.all()
+    return render(request, 'sgis/listar_fornecedores.html', {'fornecedores': fornecedores})
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import EntradaEstoqueForm
+from .models import Produto
+from .models import EntradaEstoque
+
+def entrada_estoque(request):
+    if request.method == 'POST':
+        form = EntradaEstoqueForm(request.POST)
+        if form.is_valid():
+            entrada = form.save(commit=False)
+            entrada.valor = entrada.quantidade * entrada.valor_unitario
+            entrada.save()
+            produto = entrada.produto
+            produto.estoque += entrada.quantidade
+            produto.save()
+            messages.success(request, 'Entrada de estoque registrada com sucesso!')
+            return redirect('listar_entradas')  # Redirecionar para a lista de entradas
+        else:
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
+    else:
+        form = EntradaEstoqueForm()
+    return render(request, 'sgis/entrada_estoque.html', {'form': form})
+
+def listar_entradas(request):
+    entradas = EntradaEstoque.objects.all()
+    return render(request, 'sgis/listar_entradas.html', {'entradas': entradas})
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Produto, Dispensacao
+from .forms import DispensacaoForm
+
+def dispensar_produto(request):
+    if request.method == 'POST':
+        form = DispensacaoForm(request.POST)
+        if form.is_valid():
+            dispensacao = form.save(commit=False)
+            produto = dispensacao.produto
+
+            if produto.estoque >= dispensacao.quantidade:
+                produto.estoque -= dispensacao.quantidade
+                produto.save()
+                dispensacao.save()
+                messages.success(request, 'Dispensação registrada com sucesso!')
+                return redirect('listar_dispensacoes')
+            else:
+                messages.error(request, 'Estoque insuficiente para dispensar este produto.')
+        else:
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
+    else:
+        form = DispensacaoForm()
+    return render(request, 'sgis/dispensar_produto.html', {'form': form})
+
+def listar_dispensacoes(request):
+    dispensacoes = Dispensacao.objects.all()
+    return render(request, 'sgis/listar_dispensacoes.html', {'dispensacoes': dispensacoes})
+

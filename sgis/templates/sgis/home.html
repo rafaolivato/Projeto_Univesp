@@ -15,15 +15,21 @@
                 <a href="{% url 'cadastrar_paciente' %}">Pacientes</a>
                 <a href="{% url 'cadastrar_produto' %}">Produtos</a>
                 <a href="{% url 'cadastrar_fabricante' %}">Fabricantes</a>
+                <a href="{% url 'cadastrar_fornecedor' %}">Fornecedores</a>
             </div>
         </div>
-        <a href="#">Entrada</a>
-        <a href="#">Dispensação</a>
+        <a href="{% url 'entrada_estoque' %}">Entrada</a>
+        <a href="{% url 'dispensar_produto' %}">Dispensação</a>
         <div class='dropdown'>
             <a href="#" class='dropbtn'>Relatórios</a>
             <div class='dropdown-content'>
                 <a href= "{% url 'listar_pacientes' %}">Pacientes</a>
                 <a href= "{% url 'listar_produtos' %}">Produtos</a>
+                <a href= "{% url 'listar_fornecedores' %}">Fornecedores</a>
+                <a href= "{% url 'listar_fabricantes' %}">Fabricantes</a>
+                <a href= "{% url 'listar_entradas' %}">Entradas</a>
+                <a href= "{% url 'listar_dispensacoes' %}">Dispensações</a>
+
             </div>
         </div>
     </nav>

@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listar Dispensações</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="content">
+        <h2>Listar Dispensações</h2>
+        {% if dispensacoes %}
+            <ul>
+                {% for dispensacao in dispensacoes %}
+                    <li>{{ dispensacao.produto.descricao }} - Quantidade: {{ dispensacao.quantidade }} - Data/Hora: {{ dispensacao.data_hora }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhuma dispensação registrada.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
