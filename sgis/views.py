@@ -72,9 +72,35 @@ def cadastrar_produto(request):
         form = ProdutoForm()
     return render(request, 'sgis/cadastrar_produto.html', {'form': form})
 
+from django.shortcuts import render
+from .models import Produto, EntradaEstoque, Dispensacao
+
 def listar_produtos(request):
     produtos = Produto.objects.all()
-    return render(request, 'sgis/listar_produtos.html', {'produtos': produtos})
+    produtos_com_estoque = []
+    for produto in produtos:
+        # Usa o valor atual do campo estoque do produto
+        estoque_disponivel = produto.estoque
+
+        # Adiciona os detalhes de cada entrada de estoque à lista
+        detalhes_entradas = []
+        entradas = EntradaEstoque.objects.filter(produto=produto)
+        for entrada in entradas:
+            valor_total = entrada.quantidade * entrada.valor_unitario
+            detalhes_entradas.append({
+                'lote': entrada.lote,
+                'validade': entrada.validade,
+                'valor_unitario': entrada.valor_unitario,
+                'quantidade': entrada.quantidade,
+                'valor_total': valor_total,
+            })
+        
+        produtos_com_estoque.append({
+            'produto': produto,
+            'estoque_disponivel': estoque_disponivel,
+            'detalhes_entradas': detalhes_entradas,
+        })
+    return render(request, 'sgis/listar_produtos.html', {'produtos_com_estoque': produtos_com_estoque})
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -122,9 +148,8 @@ def listar_fornecedores(request):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import EntradaEstoqueForm
 from .models import Produto
-from .models import EntradaEstoque
+from .forms import EntradaEstoqueForm
 
 def entrada_estoque(request):
     if request.method == 'POST':
@@ -133,9 +158,12 @@ def entrada_estoque(request):
             entrada = form.save(commit=False)
             entrada.valor = entrada.quantidade * entrada.valor_unitario
             entrada.save()
+
+            # Atualiza o estoque do produto
             produto = entrada.produto
             produto.estoque += entrada.quantidade
             produto.save()
+
             messages.success(request, 'Entrada de estoque registrada com sucesso!')
             return redirect('listar_entradas')  # Redirecionar para a lista de entradas
         else:
@@ -153,22 +181,37 @@ from django.contrib import messages
 from .models import Produto, Dispensacao
 from .forms import DispensacaoForm
 
+import logging
+from django.db import transaction
+
+logging.basicConfig(level=logging.DEBUG)
+
 def dispensar_produto(request):
     if request.method == 'POST':
         form = DispensacaoForm(request.POST)
+        logging.debug(f"Dados do formulário: {request.POST}")
         if form.is_valid():
             dispensacao = form.save(commit=False)
             produto = dispensacao.produto
+            quantidade_dispensada = dispensacao.quantidade
 
-            if produto.estoque >= dispensacao.quantidade:
-                produto.estoque -= dispensacao.quantidade
-                produto.save()
-                dispensacao.save()
+            logging.debug(f"Estoque antes da dispensação: {produto.estoque}")
+            logging.debug(f"Quantidade dispensada: {quantidade_dispensada}")
+
+            if quantidade_dispensada <= produto.estoque:
+                with transaction.atomic():
+                    dispensacao.save()
+                    produto.estoque -= quantidade_dispensada
+                    produto.save()
+
+                logging.debug(f"Estoque após a dispensação: {produto.estoque}")
+
                 messages.success(request, 'Dispensação registrada com sucesso!')
                 return redirect('listar_dispensacoes')
             else:
-                messages.error(request, 'Estoque insuficiente para dispensar este produto.')
+                messages.error(request, 'Estoque insuficiente para a dispensação.')
         else:
+            logging.error(f"Erros no formulário: {form.errors}")
             messages.error(request, 'Por favor, corrija os erros no formulário.')
     else:
         form = DispensacaoForm()

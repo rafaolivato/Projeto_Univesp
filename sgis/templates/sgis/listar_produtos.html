@@ -16,11 +16,32 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <ul>
-            {% for produto in produtos %}
-                <li>{{ produto.nome }} - Preço: {{ produto.preco }} - Estoque: {{ produto.estoque }}</li>
-            {% endfor %}
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Lote</th>
+                    <th>Validade</th>
+                    <th>Valor Unitário</th>
+                    <th>Quantidade</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in produtos_com_estoque %}
+                    {% for entrada in item.detalhes_entradas %}
+                        <tr>
+                            <td>{{ item.produto.descricao }}</td>
+                            <td>{% if entrada.lote %}{{ entrada.lote }}{% else %}Sem lote{% endif %}</td>
+                            <td>{% if entrada.validade %}{{ entrada.validade|date:"d/m/Y" }}{% else %}Sem validade{% endif %}</td>
+                            <td>{{ entrada.valor_unitario }}</td>
+                            <td>{{ entrada.quantidade }}</td>
+                            <td>{{ entrada.valor_total }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

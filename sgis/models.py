@@ -32,8 +32,8 @@ class Produto(models.Model):
     descricao = models.CharField(max_length=255)
     apresentacao = models.CharField(max_length=50)
     fabricante = models.ForeignKey(Fabricante, on_delete=models.CASCADE)
-    estoque = models.IntegerField(default=0) # Quantidade em estoque
-    
+    estoque = models.IntegerField(default=0)  # Adicionado o campo estoque
+       
 
     def __str__(self):
         return self.descricao
@@ -43,17 +43,25 @@ class Estoque(models.Model):
     quantidade = models.IntegerField()
     ultima_atualizacao = models.DateTimeField(auto_now=True)
 
+from django.db import models
+
 class Dispensacao(models.Model):
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, blank=True, null=True)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    paciente = models.ForeignKey('Paciente', on_delete=models.CASCADE, blank=True, null=True)
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     data_hora = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.produto.descricao} - {self.quantidade} unidades"
 
 class Fornecedor(models.Model):
     nome = models.CharField(max_length=250)
     cnpj = models.CharField(max_length=14)
     endereco = models.CharField(max_length=250, verbose_name="Endereço")
     telefone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nome
 
 import datetime
 
@@ -64,6 +72,10 @@ class EntradaEstoque(models.Model):
     validade = models.DateTimeField(default=datetime.datetime.now)
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
-    data = models.DateField()
+    data = models.DateField(verbose_name="Data da Nota Fiscal")
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.produto.descricao} - Quantidade: {self.quantidade}"
+
 

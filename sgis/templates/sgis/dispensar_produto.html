@@ -17,11 +17,14 @@
         {% endif %}
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="form-fields">
+                {{ form.as_p }}
+            </div>
             <button type="submit" class="cadastro-button">Dispensar</button>
         </form>
         <p>
             <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+        </p>
     </div>
 </body>
 </html>
