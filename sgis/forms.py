@@ -6,6 +6,10 @@ class EnderecoForm(forms.ModelForm):
     class Meta:
         model = Endereco
         fields = '__all__'
+    
+    def clean_nome(self):
+        nome = self.cleaned_data['nome']
+        return nome.upper()
 
 class PacienteForm(forms.ModelForm):
     cpf = BRCPFField()
@@ -17,6 +21,10 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = ['nome', 'cnes', 'cpf', 'data_nascimento', 'telefone']
+
+    def clean_nome(self):
+        nome = self.cleaned_data['nome']
+        return nome.upper()
 
     def save(self, commit=True):
         endereco_form = EnderecoForm(self.data)  # Cria uma instância do EnderecoForm com os dados do request
@@ -76,3 +84,12 @@ class DispensacaoForm(forms.ModelForm):
     class Meta:
         model = Dispensacao
         fields = '__all__'
+
+
+from django import forms
+from .models import SaidaEstoque
+
+class SaidaEstoqueForm(forms.ModelForm):
+    class Meta:
+        model = SaidaEstoque
+        fields = ['produto', 'quantidade', 'motivo']

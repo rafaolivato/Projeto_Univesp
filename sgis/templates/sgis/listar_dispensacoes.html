@@ -9,18 +9,31 @@
     <div class="content">
         <h2>Listar Dispensações</h2>
         {% if dispensacoes %}
-            <ul>
-                {% for dispensacao in dispensacoes %}
-                    <li>{{ dispensacao.produto.descricao }} - Quantidade: {{ dispensacao.quantidade }} - Data/Hora: {{ dispensacao.data_hora }}</li>
-                {% endfor %}
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Data/Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dispensacao in dispensacoes %}
+                        <tr>
+                            <td>{{ dispensacao.produto.descricao }}</td>
+                            <td>{{ dispensacao.quantidade }}</td>
+                            <td>{{ dispensacao.data_hora }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             <p>Nenhuma dispensação registrada.</p>
         {% endif %}
         <p>
+            <br>
             <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
         </p>
     </div>
-    
 </body>
 </html>

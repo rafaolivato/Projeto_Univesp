@@ -8,7 +8,7 @@
 <body>
     <div class="content">
         <h2>Listar Produtos</h2>
-        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+        
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -22,10 +22,10 @@
                     <th>Produto</th>
                     <th>Lote</th>
                     <th>Validade</th>
-                    <th>Valor Unitário</th>
                     <th>Quantidade</th>
+                    <th>Valor Unitário</th>
                     <th>Valor Total</th>
-                </tr>
+                    <th>Estoque Total</th>  </tr>
             </thead>
             <tbody>
                 {% for item in produtos_com_estoque %}
@@ -34,14 +34,16 @@
                             <td>{{ item.produto.descricao }}</td>
                             <td>{% if entrada.lote %}{{ entrada.lote }}{% else %}Sem lote{% endif %}</td>
                             <td>{% if entrada.validade %}{{ entrada.validade|date:"d/m/Y" }}{% else %}Sem validade{% endif %}</td>
-                            <td>{{ entrada.valor_unitario }}</td>
                             <td>{{ entrada.quantidade }}</td>
+                            <td>{{ entrada.valor_unitario }}</td>
                             <td>{{ entrada.valor_total }}</td>
-                        </tr>
+                            <td>{{ item.produto.estoque }}</td>  </tr>
                     {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
+        <br>
+        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
     </div>
 </body>
 </html>

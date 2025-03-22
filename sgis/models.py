@@ -4,7 +4,7 @@ from localflavor.br.models import BRCPFField
 
 class Endereco(models.Model):
     rua = models.CharField(max_length=255)
-    numero = models.CharField(max_length=20)
+    numero = models.CharField(max_length=20, verbose_name="Número")
     complemento = models.CharField(max_length=255, blank=True, null=True)
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
@@ -29,8 +29,8 @@ class Fabricante(models.Model):
         return self.nome
 
 class Produto(models.Model):
-    descricao = models.CharField(max_length=255)
-    apresentacao = models.CharField(max_length=50)
+    descricao = models.CharField(max_length=255, verbose_name="Descrição")
+    apresentacao = models.CharField(max_length=50, verbose_name="Apresentação")
     fabricante = models.ForeignKey(Fabricante, on_delete=models.CASCADE)
     estoque = models.IntegerField(default=0)  # Adicionado o campo estoque
        
@@ -70,7 +70,7 @@ class EntradaEstoque(models.Model):
     quantidade = models.IntegerField()
     lote = models.CharField(max_length=50, blank=True, null=True)
     validade = models.DateTimeField(default=datetime.datetime.now)
-    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Unitário")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
     data = models.DateField(verbose_name="Data da Nota Fiscal")
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
@@ -79,3 +79,13 @@ class EntradaEstoque(models.Model):
         return f"{self.produto.descricao} - Quantidade: {self.quantidade}"
 
 
+from django.db import models
+
+class SaidaEstoque(models.Model):
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
+    quantidade = models.IntegerField()
+    motivo = models.TextField()
+    data_saida = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.produto.descricao} - {self.quantidade}'

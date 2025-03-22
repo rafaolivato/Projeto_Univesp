@@ -8,6 +8,7 @@
 <body>
     <div class="cadastro-container">
         <h2>Cadastrar Fabricante</h2>
+        <br>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -23,6 +24,7 @@
             <button type="submit" class="cadastro-button">Salvar</button>
             <br>
             <p>
+            <br>
             <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
         </form>
     </div>

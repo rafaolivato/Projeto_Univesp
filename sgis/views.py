@@ -54,6 +54,23 @@ def listar_pacientes(request):
         pacientes = Paciente.objects.all()
         return render(request, 'sgis/listar_pacientes.html', {'pacientes': pacientes})
 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Paciente
+from django.contrib import messages
+
+def excluir_paciente(request, paciente_id):
+    paciente = get_object_or_404(Paciente, pk=paciente_id)
+    if request.method == 'POST':
+        paciente.delete()
+        messages.success(request, 'Paciente excluído com sucesso.')
+        return redirect('listar_pacientes')  # Redirecione para a página de listagem
+    else:
+        # Se alguém tentar acessar a URL com GET, redirecione ou exiba um erro
+        messages.error(request, 'Método não permitido.')
+        return redirect('listar_pacientes')
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ProdutoForm
@@ -178,7 +195,7 @@ def listar_entradas(request):
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Produto, Dispensacao
+from .models import Produto, Dispensacao, EntradaEstoque
 from .forms import DispensacaoForm
 
 import logging
@@ -207,7 +224,7 @@ def dispensar_produto(request):
                 logging.debug(f"Estoque após a dispensação: {produto.estoque}")
 
                 messages.success(request, 'Dispensação registrada com sucesso!')
-                return redirect('listar_dispensacoes')
+                return redirect('listar_produtos')  # Redireciona para listar_produtos após a dispensação
             else:
                 messages.error(request, 'Estoque insuficiente para a dispensação.')
         else:
@@ -217,7 +234,56 @@ def dispensar_produto(request):
         form = DispensacaoForm()
     return render(request, 'sgis/dispensar_produto.html', {'form': form})
 
+def listar_produtos(request):
+    produtos_com_estoque = []
+    produtos = Produto.objects.all()
+
+    for produto in produtos:
+        entradas = EntradaEstoque.objects.filter(produto=produto)
+        detalhes_entradas = []
+        total_estoque = 0  # Inicializa o estoque total para este produto
+
+        for entrada in entradas:
+            detalhes_entradas.append({
+                'lote': entrada.lote,
+                'validade': entrada.validade,
+                'valor_unitario': entrada.valor_unitario,
+                'quantidade': entrada.quantidade,
+                'valor_total': entrada.valor,
+            })
+            total_estoque += entrada.quantidade  # Adiciona a quantidade de cada entrada ao estoque total
+
+        produtos_com_estoque.append({
+            'produto': produto,
+            'detalhes_entradas': detalhes_entradas,
+            'total_estoque': total_estoque,  # Adiciona o estoque total ao contexto
+        })
+
+    return render(request, 'sgis/listar_produtos.html', {'produtos_com_estoque': produtos_com_estoque})
 def listar_dispensacoes(request):
     dispensacoes = Dispensacao.objects.all()
     return render(request, 'sgis/listar_dispensacoes.html', {'dispensacoes': dispensacoes})
 
+from django.shortcuts import render
+
+def saiba_mais(request):
+    return render(request, 'sgis/saiba_mais.html')
+
+from django.shortcuts import render, redirect
+from .forms import SaidaEstoqueForm
+from .models import Produto
+from django.contrib import messages
+
+def saida_estoque(request):
+    if request.method == 'POST':
+        form = SaidaEstoqueForm(request.POST)
+        if form.is_valid():
+            saida = form.save()
+            produto = saida.produto
+            produto.estoque -= saida.quantidade
+            produto.save()
+            messages.success(request, 'Saída de estoque registrada com sucesso.')
+            return redirect('saida_estoque')
+    else:
+        form = SaidaEstoqueForm()
+    return render(request, 'sgis/saida_estoque.html', {'form': form})

@@ -10,6 +10,7 @@
 <body>
     <div class="login-container">
         <h2>Login</h2>
+        <br>
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -21,9 +22,11 @@
                 <input type="password" name="password" id="password" required>
             </div>
             <button type="submit" class="login-button">Entrar</button>
+            
 
-            <p><a href="{% url 'password_reset' %}">Esqueci minha senha</a></p>
+            
         </form>
+        <br><a class="esqueci_senha"href="{% url 'password_reset' %}">Esqueci minha senha</a></br>
     </div>
 </body>
 </html>

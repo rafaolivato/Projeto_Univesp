@@ -8,7 +8,7 @@
 <body>
     <div class="content">
         <h2>Listar Pacientes</h2>
-        
+
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -16,11 +16,31 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <ul>
-            {% for paciente in pacientes %}
-                <li>{{ paciente.nome }} - Nascimento: {{ paciente.data_nascimento|date:"d/m/Y" }}</li>
-            {% endfor %}
-        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data de Nascimento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                    <tr>
+                        <td>{{ paciente.nome }}</td>
+                        <td>{{ paciente.data_nascimento|date:"d/m/Y" }}</td>
+                        <td>
+                            <form method="post" action="{% url 'excluir_paciente' paciente.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-button">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
         <br>
         <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
     </div>

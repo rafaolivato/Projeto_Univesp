@@ -7,3 +7,4 @@ admin.site.register(Fornecedor)
 admin.site.register(Fabricante)
 admin.site.register(Dispensacao)
 admin.site.register(EntradaEstoque)
+

@@ -4,11 +4,13 @@
 <html>
 <head>
     <title>Cadastrar Paciente</title>
+    <br>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="cadastro-container">
-        <h2>Cadastrar Paciente</h2>
+        <h2 class="titulo_cadastro_paciente">Cadastrar Paciente</h2>
+        <br>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -27,6 +29,9 @@
                     <label for="{{ form.cpf.id_for_label }}">CPF:</label>
                     {% render_field form.cpf placeholder="XXX.XXX.XXX-XX" data-mask="000.000.000-00" %}
                 </p>
+                <p>
+                    <label for="{{ form.cnes.id_for_label }}">CNES:</label>
+                    {{ form.cnes }}
                 <p>
                     <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento:</label>
                     {% render_field form.data_nascimento type="date" %}

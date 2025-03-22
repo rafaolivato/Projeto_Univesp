@@ -16,4 +16,7 @@ urlpatterns = [
     path('listar_fornecedores/', views.listar_fornecedores, name='listar_fornecedores'),
     path('dispensar_produto/', views.dispensar_produto, name='dispensar_produto'),
     path('listar_dispensacoes/', views.listar_dispensacoes, name='listar_dispensacoes'),
+    path('paciente/excluir/<int:paciente_id>/', views.excluir_paciente, name='excluir_paciente'),
+    path('saiba_mais/', views.saiba_mais, name='saiba_mais'),
+    path('saida-estoque/', views.saida_estoque, name='saida_estoque'),
 ]

@@ -3,12 +3,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Página Inicial</title>
-    
+    <title>SGIS</title>
 </head>
 <body>
+    <header></header>
     <nav class="navbar">
+        <div class="logo-container">
+            <img src="{% static 'imagens/mini_logo2.png' %}" alt="MiniLogo SGIS" class="minilogo">
+        </div>
         <div class="dropdown">
             <a href="#" class="dropbtn">Cadastros</a>
             <div class="dropdown-content">
@@ -20,23 +26,33 @@
         </div>
         <a href="{% url 'entrada_estoque' %}">Entrada</a>
         <a href="{% url 'dispensar_produto' %}">Dispensação</a>
+        <a href="{% url 'saida_estoque' %}">Saídas</a>
         <div class='dropdown'>
             <a href="#" class='dropbtn'>Relatórios</a>
             <div class='dropdown-content'>
-                <a href= "{% url 'listar_pacientes' %}">Pacientes</a>
-                <a href= "{% url 'listar_produtos' %}">Produtos</a>
-                <a href= "{% url 'listar_fornecedores' %}">Fornecedores</a>
-                <a href= "{% url 'listar_fabricantes' %}">Fabricantes</a>
-                <a href= "{% url 'listar_entradas' %}">Entradas</a>
-                <a href= "{% url 'listar_dispensacoes' %}">Dispensações</a>
-
+                <a href="{% url 'listar_pacientes' %}">Pacientes</a>
+                <a href="{% url 'listar_produtos' %}">Produtos</a>
+                <a href="{% url 'listar_fornecedores' %}">Fornecedores</a>
+                <a href="{% url 'listar_fabricantes' %}">Fabricantes</a>
+                <a href="{% url 'listar_entradas' %}">Entradas</a>
+                <a href="{% url 'listar_dispensacoes' %}">Dispensações</a>
             </div>
         </div>
     </nav>
-
-    <div class="content">
-        <h1>Bem-vindo à Página Inicial!</h1>
-        <p>Aqui você pode gerenciar suas operações.</p>
-    </div>
+    <main class="apresentacao">
+        <section class="apresentacao-texto">
+            <h1 class="apresentacao-texto-titulo">Bem-vindo ao SGIS! Simplificando o Gerenciamento de Insumos <Strong>para um cuidado mais eficiente</Strong> </h1>
+            <br>
+            <p class="apresentacao-texto-paragrafo">"SGIS: Gerencie seus insumos de saúde com precisão e eficiência. A tecnologia que otimiza seu estoque e garante o cuidado ideal."</p>
+            <br>
+            <div class="apresentacao-texto-saibamais">
+                <a class="apresentacao-texto-saibamais_link" href="{% url 'saiba_mais' %}">Saiba mais</a>
+            </div>
+        </section>
+        <img src="{% static 'imagens/LogoSgis2.png' %}" alt="imagens/marcadagua.png">
+    </main>
+    <footer>
+        <p>2025 SGIS. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>

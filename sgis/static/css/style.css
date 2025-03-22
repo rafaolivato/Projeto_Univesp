@@ -1,12 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+
 body {
-    font-family: sans-serif;
+    height: 100vh;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #a8edea, #fed6e3);
+    color: black;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
+
 
 .login-container {
     background-color: white;
@@ -14,8 +23,11 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
-    align-self: center; /* Adicionado */
-    margin-top: 250px; /* Adicionado */
+    margin: 250px auto 0 auto; /* Modificado */
+}
+
+.minilogo {
+    height: 50px; /* Ajuste o tamanho do logo conforme necessário */
 }
 
 .form-group {
@@ -44,6 +56,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: 10px; /* Adicionado */
 }
 
 .navbar {
@@ -52,6 +65,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: flex-start;
+    align-items: center;
 }
 
 
@@ -175,17 +189,6 @@ body {
     color: #155724;
 }
 
-.home-button {
-    background-color: green;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    margin-bottom: 20px;
-    display: inline-block;
-}
 
 .home-button:hover {
     background-color: #e91e63;
@@ -249,4 +252,141 @@ tr:hover {
 .messages li.error {
     background-color: #f8d7da;
     color: #721c24;
+}
+
+.delete-button {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+
+strong {
+    color: #f06292;
+}
+
+
+.apresentacao {
+    margin: 10% 15%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+   
+}
+
+
+.apresentacao-texto {
+    width: 615px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+
+.apresentacao-texto-titulo {
+    font-size: 36px;
+    font-family: "Krona One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+   
+}
+
+
+.apresentacao-texto-paragrafo {
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 24px;
+}
+
+.apresentacao-texto-saibamais{
+    display:flex;
+    justify-content: space-between;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    color: #f06292;
+}
+
+.apresentacao-texto-saibamais_link{
+    background-color: #f06292;
+    color: white;
+    width: 280px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 24px;
+    padding: 21.5px 0;
+    text-decoration: none;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+  
+
+}
+   
+
+footer {
+    background-color: #fce4ec; /* Cor de fundo suave */
+    color: #f06292; /* Cor da fonte principal */
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 1px solid #f06292; /* Linha superior para separar do conteúdo */
+    font-family: sans-serif;
+    line-height: 1.6;
+}
+
+.titulo_cadastro_paciente{
+    font-size: 24px;
+    font-family: "Krona One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #f06292;
+}
+
+.conteudo_saiba_mais{
+    text-align: left;
+    margin: 5% 5%;
+}
+
+.apresentacao-texto-saiba-mais{
+    font-size: 16px;
+    font-family: "Krona One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000;
+    padding: 4px;
+}
+
+.apresentacao-texto-titulo_saiba_mais{  
+    font-size: 24px;
+    font-family: "Krona One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #f06292;
+    padding: 4px;
+
+}
+
+.esqueci_senha {
+    background-color: #0574db;
+    color: white;
+    width: 300px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 12px;
+    padding: 10px 15px;
+    text-decoration: none;
+    font-family: Arial, "Montserrat", sans-serif;
+    font-weight: 400;
+    margin-top: 10px; /* Adicionado */
 }

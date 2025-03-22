@@ -8,7 +8,8 @@
 <body>
     <div class="content">
         <h2>Listar Entradas de Estoque</h2>
-        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+        
+
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -16,13 +17,37 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <ul>
-            {% for entrada in entradas %}
-            
-            <li>{{ entrada.produto.descricao }} - Quantidade: {{ entrada.quantidade }} - Lote: {{ entrada.lote }} - Validade: {{ entrada.validade|date:"d/m/Y" }} - Valor Unitário: {{ entrada.valor_unitario }} - Valor Total: {{ entrada.valor }} - Data: {{ entrada.data|date:"d/m/Y" }} - Fornecedor: {{ entrada.fornecedor.nome }}</li>
-        
-            {% endfor %}
-        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Lote</th>
+                    <th>Validade</th>
+                    <th>Valor Unitário</th>
+                    <th>Valor Total</th>
+                    <th>Data</th>
+                    <th>Fornecedor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrada in entradas %}
+                    <tr>
+                        <td>{{ entrada.produto.descricao }}</td>
+                        <td>{{ entrada.quantidade }}</td>
+                        <td>{{ entrada.lote }}</td>
+                        <td>{{ entrada.validade|date:"d/m/Y" }}</td>
+                        <td>{{ entrada.valor_unitario }}</td>
+                        <td>{{ entrada.valor }}</td>
+                        <td>{{ entrada.data|date:"d/m/Y" }}</td>
+                        <td>{{ entrada.fornecedor.nome }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
     </div>
 </body>
 </html>
