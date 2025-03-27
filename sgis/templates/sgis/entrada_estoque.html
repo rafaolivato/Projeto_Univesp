@@ -1,14 +1,18 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Entrada de Estoque</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+   
 </head>
 <body>
     <div class="cadastro-container">
         <h2>Entrada de Estoque</h2>
         <br>
+
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -16,16 +20,62 @@
                 {% endfor %}
             </ul>
         {% endif %}
+
         <form method="post">
             {% csrf_token %}
-            <div class="form-fields">
-                {{ form.as_p }}
+        
+            <!-- FORMULÁRIO DA NOTA FISCAL -->
+            <fieldset>
+                <legend>Dados da Nota Fiscal</legend>
+                <div class="form-group">
+                    {% for field in nota_form %}
+                        {% if field.name != 'nota_fiscal' %}
+                            <div class="form-field">
+                                {{ field.label }} 
+                                {{ field }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </fieldset>
+        
+            <!-- FORMULÁRIOS DOS ITENS DA NOTA -->
+<fieldset>
+    <legend>Itens da Nota Fiscal</legend>
+    
+    {{ formset.management_form }}
+
+    <div class="form-fields">
+        {% for form in formset %}
+            <div class="formset-form">
+                {% for field in form %}
+                    {% if field.name != 'fornecedor' %}
+                        <div class="form-field">
+                            {{ field.label }}
+                            {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
             </div>
-            <button type="submit" class="cadastro-button">Salvar</button>
-            <p>
-                <br>
-                <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
-        </form>
+        {% endfor %}
     </div>
+
+    <button type="button" id="add-item" class="cadastro-button">Adicionar Produto</button>
+</fieldset>
+
+        
+            <button type="submit" class="cadastro-button">Salvar</button>
+        </form>
+        
+
+        <br>
+        <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
+    </div>
+
+   
+    <script src="{% static 'js/entrada_estoque.js' %}"></script>
+
 </body>
 </html>

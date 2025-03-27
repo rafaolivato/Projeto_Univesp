@@ -39,9 +39,9 @@
                         <td>{{ entrada.lote }}</td>
                         <td>{{ entrada.validade|date:"d/m/Y" }}</td>
                         <td>{{ entrada.valor_unitario }}</td>
-                        <td>{{ entrada.valor }}</td>
-                        <td>{{ entrada.data|date:"d/m/Y" }}</td>
-                        <td>{{ entrada.fornecedor.nome }}</td>
+                        <td>{{ entrada.valor_total}}</td>
+                        <td>{{ entrada.nota_fiscal.data_nota|date:"d/m/Y" }}</td>
+                        <td>{{ entrada.nota_fiscal.fornecedor.nome }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

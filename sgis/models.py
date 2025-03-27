@@ -62,21 +62,43 @@ class Fornecedor(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class NotaFiscal(models.Model):
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    data_nota = models.DateField(verbose_name="Data da Nota Fiscal")
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
+    numero_nota_fiscal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Número da Nota Fiscal")
+    
+
+    def __str__(self):
+        return f"Nota Fiscal {self.id} - {self.fornecedor.nome}"
 
 import datetime
 
 class EntradaEstoque(models.Model):
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     lote = models.CharField(max_length=50, blank=True, null=True)
-    validade = models.DateTimeField(default=datetime.datetime.now)
-    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Unitário")
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
-    data = models.DateField(verbose_name="Data da Nota Fiscal")
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    validade = models.DateField(default=datetime.date.today)
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Unitário", default=0.00)
+    nota_fiscal = models.ForeignKey('NotaFiscal', on_delete=models.CASCADE, null=True, blank=True)  # Relacionando com NotaFiscal
+    
+    def valor_total(self):
+        return self.quantidade * self.valor_unitario
 
     def __str__(self):
         return f"{self.produto.descricao} - Quantidade: {self.quantidade}"
+    
+class ItemEntradaEstoque(models.Model):
+    entrada = models.ForeignKey(EntradaEstoque, on_delete=models.CASCADE, related_name='itens')
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
+    quantidade = models.IntegerField()
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    validade = models.DateField()
+
+    def __str__(self):
+        return f"{self.produto.descricao} - {self.quantidade}"
 
 
 from django.db import models

@@ -12,6 +12,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Paciente</th>
                         <th>Produto</th>
                         <th>Quantidade</th>
                         <th>Data/Hora</th>
@@ -20,9 +21,10 @@
                 <tbody>
                     {% for dispensacao in dispensacoes %}
                         <tr>
+                            <td>{{ dispensacao.paciente.nome }}</td>
                             <td>{{ dispensacao.produto.descricao }}</td>
                             <td>{{ dispensacao.quantidade }}</td>
-                            <td>{{ dispensacao.data_hora }}</td>
+                            <td>{{ dispensacao.data_hora|date:"d/m/Y"  }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -56,17 +56,6 @@ class FabricanteForm(forms.ModelForm):
         model = Fabricante
         fields = '__all__'
 
-from django import forms
-from .models import EntradaEstoque
-
-class EntradaEstoqueForm(forms.ModelForm):
-    class Meta:
-        model = EntradaEstoque
-        fields = '__all__'
-        widgets = {
-            'validade': forms.DateTimeInput(attrs={'type': 'date'}),
-            'data': forms.DateInput(attrs={'type': 'date'}),
-        }
 
 from django import forms
 from .models import Fornecedor
@@ -76,6 +65,45 @@ class FornecedorForm(forms.ModelForm):
         model = Fornecedor
         fields = '__all__'
 
+from django import forms
+from .models import EntradaEstoque, NotaFiscal, ItemEntradaEstoque
+from django.forms import modelformset_factory
+
+
+class EntradaEstoqueForm(forms.ModelForm):
+    class Meta:
+        model = EntradaEstoque
+        fields = '__all__'
+        widgets = {
+            'validade': forms.DateInput(attrs={'type': 'date'}),
+            'data': forms.DateInput(attrs={'type': 'date'}),
+            'fornecedor': forms.HiddenInput(),  # Esconde o campo fornecedor no formulário
+        }
+
+EntradaEstoqueFormSet = modelformset_factory(
+    EntradaEstoque,
+    form=EntradaEstoqueForm,
+    extra=1,  # Quantidade inicial de formulários exibidos
+    can_delete=True  # Permite remover itens da nota
+)
+
+
+class NotaFiscalForm(forms.ModelForm):
+    class Meta:
+        model = NotaFiscal
+        fields = ['fornecedor', 'numero_nota_fiscal', 'data_nota', 'valor_total']
+        widgets = {
+            'data_nota': forms.DateInput(attrs={'type': 'date'}),
+            'fornecedor': forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%;'}),
+        }
+
+class ItemEntradaEstoqueForm(forms.ModelForm):
+    class Meta:
+        model = ItemEntradaEstoque
+        fields = ['produto', 'quantidade', 'valor_unitario', 'validade']
+        widgets = {
+            'validade': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 from django import forms
 from .models import Dispensacao

@@ -381,6 +381,7 @@ footer {
     background-color: #0574db;
     color: white;
     width: 300px;
+    height:35px;
     border-radius: 5px;
     text-align: center;
     font-size: 12px;
@@ -388,5 +389,45 @@ footer {
     text-decoration: none;
     font-family: Arial, "Montserrat", sans-serif;
     font-weight: 400;
-    margin-top: 10px; /* Adicionado */
+    margin-top: 5px; /* Adicionado */
+}
+
+/* Ajustes visuais para os fieldsets */
+fieldset {
+    border: 2px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+legend {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+/* Ajuste para alinhar os formulários dos produtos */
+.form-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.formset-form {
+    flex: 1 1 300px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+select[name="fornecedor"] {
+    width: 100%; /* Ocupar 100% do espaço disponível */
+    padding: 8px; /* Adiciona espaço interno para melhorar a aparência */
+    font-size: 16px; /* Deixa o texto maior e mais legível */
+    border-radius: 5px; /* Deixa as bordas arredondadas */
+    border: 1px solid #ccc; /* Adiciona um contorno suave */
 }

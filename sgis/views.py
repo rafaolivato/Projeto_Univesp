@@ -163,31 +163,48 @@ def listar_fornecedores(request):
     fornecedores = Fornecedor.objects.all()
     return render(request, 'sgis/listar_fornecedores.html', {'fornecedores': fornecedores})
 
-from django.shortcuts import render, redirect
+from django.db import transaction
+from django.db.models import F
 from django.contrib import messages
-from .models import Produto
-from .forms import EntradaEstoqueForm
+from django.shortcuts import render, redirect
+from .models import NotaFiscal, EntradaEstoque
+from .forms import NotaFiscalForm, EntradaEstoqueFormSet
 
 def entrada_estoque(request):
-    if request.method == 'POST':
-        form = EntradaEstoqueForm(request.POST)
-        if form.is_valid():
-            entrada = form.save(commit=False)
-            entrada.valor = entrada.quantidade * entrada.valor_unitario
-            entrada.save()
+    if request.method == "POST":
+        nota_form = NotaFiscalForm(request.POST)
+        formset = EntradaEstoqueFormSet(request.POST)
 
-            # Atualiza o estoque do produto
-            produto = entrada.produto
-            produto.estoque += entrada.quantidade
-            produto.save()
+        if nota_form.is_valid() and formset.is_valid():
+            with transaction.atomic():  # Garante que todas as operações sejam feitas juntas
+                nota_fiscal = nota_form.save()
 
-            messages.success(request, 'Entrada de estoque registrada com sucesso!')
-            return redirect('listar_entradas')  # Redirecionar para a lista de entradas
+                for form in formset:
+                    if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                        entrada = form.save(commit=False)
+                        entrada.nota_fiscal = nota_fiscal  # Associa a entrada à nota fiscal criada
+                        entrada.fornecedor = nota_fiscal.fornecedor  # Define automaticamente o fornecedor
+                        entrada.save()
+
+                        # Atualiza o estoque do produto
+                        produto = entrada.produto
+                        produto.estoque = F('estoque') + entrada.quantidade
+                        produto.save(update_fields=['estoque'])  # Evita concorrência de banco de dados
+
+                messages.success(request, 'Entradas de estoque registradas com sucesso!')
+                return redirect('listar_entradas')
         else:
             messages.error(request, 'Por favor, corrija os erros no formulário.')
     else:
-        form = EntradaEstoqueForm()
-    return render(request, 'sgis/entrada_estoque.html', {'form': form})
+        nota_form = NotaFiscalForm()
+        formset = EntradaEstoqueFormSet(queryset=EntradaEstoque.objects.none())
+
+    return render(request, 'sgis/entrada_estoque.html', {
+        'nota_form': nota_form,
+        'formset': formset
+    })
+
+
 
 def listar_entradas(request):
     entradas = EntradaEstoque.objects.all()
@@ -249,7 +266,7 @@ def listar_produtos(request):
                 'validade': entrada.validade,
                 'valor_unitario': entrada.valor_unitario,
                 'quantidade': entrada.quantidade,
-                'valor_total': entrada.valor,
+                'valor_total': entrada.valor_total,
             })
             total_estoque += entrada.quantidade  # Adiciona a quantidade de cada entrada ao estoque total
 
