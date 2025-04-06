@@ -144,14 +144,40 @@ body {
 .cadastro-button { /* Alterado o nome da classe */
     background-color: #f06292;
     color: white;
-    padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    padding: 10px 20px;
     margin-top: 20px; /* Adicionado margem */
+    margin-bottom: 20;
+    text-decoration: none;
 }
 
+.custom-success-btn {
+    background-color: #28a745; /* verde Bootstrap */
+    border-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-success-btn:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: scale(1.03);
+}
+
+.custom-success-btn:active {
+    background-color: #1c7430;
+    border-color: #1a6f2b;
+    transform: scale(0.98);
+}
+   
+    
+    
+    
 .form-fields p { /* Adicionado estilo para os parágrafos do formulário */
     margin-bottom: 15px;
 }
@@ -413,7 +439,7 @@ legend {
 .form-fields {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 30px;
 }
 
 .formset-form {

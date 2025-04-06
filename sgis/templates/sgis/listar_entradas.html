@@ -33,18 +33,21 @@
             </thead>
             <tbody>
                 {% for entrada in entradas %}
-                    <tr>
-                        <td>{{ entrada.produto.descricao }}</td>
-                        <td>{{ entrada.quantidade }}</td>
-                        <td>{{ entrada.lote }}</td>
-                        <td>{{ entrada.validade|date:"d/m/Y" }}</td>
-                        <td>{{ entrada.valor_unitario }}</td>
-                        <td>{{ entrada.valor_total}}</td>
-                        <td>{{ entrada.nota_fiscal.data_nota|date:"d/m/Y" }}</td>
-                        <td>{{ entrada.nota_fiscal.fornecedor.nome }}</td>
-                    </tr>
+                    {% for item in entrada.itens.all %}
+                        <tr>
+                            <td>{{ item.produto.descricao }}</td>
+                            <td>{{ item.quantidade }}</td>
+                            <td>{{ item.lote }}</td>
+                            <td>{{ item.validade|date:"d/m/Y" }}</td>
+                            <td>{{ item.valor_unitario }}</td>
+                            <td>{{ item.valor_total}}</td>
+                            <td>{{ entrada.nota_fiscal.data_nota|date:"d/m/Y" }}</td>
+                            <td>{{ entrada.nota_fiscal.fornecedor.nome }}</td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
+            
         </table>
         <br>
         <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>

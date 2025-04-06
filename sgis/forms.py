@@ -42,11 +42,9 @@ from django import forms
 from .models import Produto
 
 class ProdutoForm(forms.ModelForm):
-    
-
     class Meta:
         model = Produto
-        fields = '__all__'
+        exclude = ['estoque']
 
 from django import forms
 from .models import Fabricante
@@ -66,44 +64,36 @@ class FornecedorForm(forms.ModelForm):
         fields = '__all__'
 
 from django import forms
-from .models import EntradaEstoque, NotaFiscal, ItemEntradaEstoque
+from .models import NotaFiscal, ItemEntradaEstoque, EntradaEstoque
 from django.forms import modelformset_factory
-
-
-class EntradaEstoqueForm(forms.ModelForm):
-    class Meta:
-        model = EntradaEstoque
-        fields = '__all__'
-        widgets = {
-            'validade': forms.DateInput(attrs={'type': 'date'}),
-            'data': forms.DateInput(attrs={'type': 'date'}),
-            'fornecedor': forms.HiddenInput(),  # Esconde o campo fornecedor no formulário
-        }
-
-EntradaEstoqueFormSet = modelformset_factory(
-    EntradaEstoque,
-    form=EntradaEstoqueForm,
-    extra=1,  # Quantidade inicial de formulários exibidos
-    can_delete=True  # Permite remover itens da nota
-)
-
+from .models import ItemEntradaEstoque
 
 class NotaFiscalForm(forms.ModelForm):
     class Meta:
         model = NotaFiscal
-        fields = ['fornecedor', 'numero_nota_fiscal', 'data_nota', 'valor_total']
+        fields = ['fornecedor', 'data_nota', 'numero_nota_fiscal', 'valor_total']
         widgets = {
             'data_nota': forms.DateInput(attrs={'type': 'date'}),
-            'fornecedor': forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%;'}),
         }
+
+from django import forms
+from django.forms import modelformset_factory
+from .models import ItemEntradaEstoque
 
 class ItemEntradaEstoqueForm(forms.ModelForm):
     class Meta:
         model = ItemEntradaEstoque
-        fields = ['produto', 'quantidade', 'valor_unitario', 'validade']
+        fields = ['produto', 'lote', 'quantidade', 'valor_unitario', 'validade']
         widgets = {
             'validade': forms.DateInput(attrs={'type': 'date'}),
         }
+
+ItemEntradaEstoqueFormSet = modelformset_factory(
+    ItemEntradaEstoque,
+    form=ItemEntradaEstoqueForm,
+    extra=1,  # Um formulário extra para adicionar
+    
+)
 
 from django import forms
 from .models import Dispensacao

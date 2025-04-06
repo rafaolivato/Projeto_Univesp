@@ -89,35 +89,7 @@ def cadastrar_produto(request):
         form = ProdutoForm()
     return render(request, 'sgis/cadastrar_produto.html', {'form': form})
 
-from django.shortcuts import render
-from .models import Produto, EntradaEstoque, Dispensacao
 
-def listar_produtos(request):
-    produtos = Produto.objects.all()
-    produtos_com_estoque = []
-    for produto in produtos:
-        # Usa o valor atual do campo estoque do produto
-        estoque_disponivel = produto.estoque
-
-        # Adiciona os detalhes de cada entrada de estoque à lista
-        detalhes_entradas = []
-        entradas = EntradaEstoque.objects.filter(produto=produto)
-        for entrada in entradas:
-            valor_total = entrada.quantidade * entrada.valor_unitario
-            detalhes_entradas.append({
-                'lote': entrada.lote,
-                'validade': entrada.validade,
-                'valor_unitario': entrada.valor_unitario,
-                'quantidade': entrada.quantidade,
-                'valor_total': valor_total,
-            })
-        
-        produtos_com_estoque.append({
-            'produto': produto,
-            'estoque_disponivel': estoque_disponivel,
-            'detalhes_entradas': detalhes_entradas,
-        })
-    return render(request, 'sgis/listar_produtos.html', {'produtos_com_estoque': produtos_com_estoque})
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -163,47 +135,39 @@ def listar_fornecedores(request):
     fornecedores = Fornecedor.objects.all()
     return render(request, 'sgis/listar_fornecedores.html', {'fornecedores': fornecedores})
 
-from django.db import transaction
-from django.db.models import F
-from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import NotaFiscal, EntradaEstoque
-from .forms import NotaFiscalForm, EntradaEstoqueFormSet
+from .models import NotaFiscal, EntradaEstoque, ItemEntradaEstoque
+from .forms import NotaFiscalForm, ItemEntradaEstoqueFormSet
 
 def entrada_estoque(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         nota_form = NotaFiscalForm(request.POST)
-        formset = EntradaEstoqueFormSet(request.POST)
+        formset = ItemEntradaEstoqueFormSet(request.POST)
 
         if nota_form.is_valid() and formset.is_valid():
-            with transaction.atomic():  # Garante que todas as operações sejam feitas juntas
-                nota_fiscal = nota_form.save()
+            nota_fiscal = nota_form.save()
+            entrada_estoque = EntradaEstoque.objects.create(nota_fiscal=nota_fiscal)
 
-                for form in formset:
-                    if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
-                        entrada = form.save(commit=False)
-                        entrada.nota_fiscal = nota_fiscal  # Associa a entrada à nota fiscal criada
-                        entrada.fornecedor = nota_fiscal.fornecedor  # Define automaticamente o fornecedor
-                        entrada.save()
+            itens = formset.save(commit=False)
+            for item in itens:
+                item.entrada = entrada_estoque
+                item.save()
 
-                        # Atualiza o estoque do produto
-                        produto = entrada.produto
-                        produto.estoque = F('estoque') + entrada.quantidade
-                        produto.save(update_fields=['estoque'])  # Evita concorrência de banco de dados
+                # Atualiza o estoque
+                produto = item.produto
+                produto.estoque += item.quantidade
+                produto.save()
 
-                messages.success(request, 'Entradas de estoque registradas com sucesso!')
-                return redirect('listar_entradas')
-        else:
-            messages.error(request, 'Por favor, corrija os erros no formulário.')
+            return redirect('/listar_entradas')
+
     else:
         nota_form = NotaFiscalForm()
-        formset = EntradaEstoqueFormSet(queryset=EntradaEstoque.objects.none())
+        formset = ItemEntradaEstoqueFormSet(queryset=ItemEntradaEstoque.objects.none())
 
     return render(request, 'sgis/entrada_estoque.html', {
         'nota_form': nota_form,
         'formset': formset
     })
-
 
 
 def listar_entradas(request):
@@ -251,24 +215,41 @@ def dispensar_produto(request):
         form = DispensacaoForm()
     return render(request, 'sgis/dispensar_produto.html', {'form': form})
 
+
 def listar_produtos(request):
     produtos_com_estoque = []
     produtos = Produto.objects.all()
 
     for produto in produtos:
-        entradas = EntradaEstoque.objects.filter(produto=produto)
-        detalhes_entradas = []
+        # Filtrando as entradas de estoque relacionadas a este produto
+        entradas = EntradaEstoque.objects.filter(itens__produto=produto)
+        
         total_estoque = 0  # Inicializa o estoque total para este produto
+        detalhes_entradas = []  # A variável precisa ser definida antes de usá-la
 
+        print(f"Produto: {produto.descricao}")  # Para depuração
+        print(f"Entradas relacionadas ao produto {produto.descricao}: {entradas.count()} entradas encontradas.")  # Depuração
+        
         for entrada in entradas:
-            detalhes_entradas.append({
-                'lote': entrada.lote,
-                'validade': entrada.validade,
-                'valor_unitario': entrada.valor_unitario,
-                'quantidade': entrada.quantidade,
-                'valor_total': entrada.valor_total,
-            })
-            total_estoque += entrada.quantidade  # Adiciona a quantidade de cada entrada ao estoque total
+            print(f"Entrada de Estoque: {entrada.id}")  # Para depuração
+            # Agora vamos acessar os itens (ItemEntradaEstoque) relacionados à entrada
+            itens = entrada.itens.filter(produto=produto)
+
+            for item in itens:
+                print(f"Item: {item.produto.descricao}, Lote: {item.lote}, Quantidade: {item.quantidade}")  # Depuração
+                
+                detalhes_entradas.append({
+                    'lote': item.lote,  # Acessando 'lote' de ItemEntradaEstoque
+                    'validade': item.validade,  # Acessando 'validade' de ItemEntradaEstoque
+                    'valor_unitario': item.valor_unitario,  # Acessando 'valor_unitario' de ItemEntradaEstoque
+                    'quantidade': item.quantidade,  # Acessando 'quantidade' de ItemEntradaEstoque
+                    'valor_total': item.valor_total,  # Acessando 'valor_total' de ItemEntradaEstoque
+                })
+                
+                total_estoque += item.quantidade  # Adiciona a quantidade de cada entrada ao estoque total
+
+        # Verificação de total_estoque antes de adicionar ao contexto
+        print(f"Total de estoque para {produto.descricao}: {total_estoque}")  # Depuração
 
         produtos_com_estoque.append({
             'produto': produto,
@@ -277,6 +258,8 @@ def listar_produtos(request):
         })
 
     return render(request, 'sgis/listar_produtos.html', {'produtos_com_estoque': produtos_com_estoque})
+
+
 def listar_dispensacoes(request):
     dispensacoes = Dispensacao.objects.all()
     return render(request, 'sgis/listar_dispensacoes.html', {'dispensacoes': dispensacoes})

@@ -39,7 +39,10 @@
             </div>
         </div>
     </nav>
+    
     <main class="apresentacao">
+        {% block content %}
+        <!-- O conteúdo da página será inserido aqui -->
         <section class="apresentacao-texto">
             <h1 class="apresentacao-texto-titulo">Bem-vindo ao SGIS! Simplificando o Gerenciamento de Insumos <Strong>para um cuidado mais eficiente</Strong> </h1>
             <br>
@@ -50,7 +53,9 @@
             </div>
         </section>
         <img src="{% static 'imagens/LogoSgis2.png' %}" alt="imagens/marcadagua.png">
+        {% endblock %}
     </main>
+
     <footer>
         <p>2025 SGIS. Todos os direitos reservados.</p>
     </footer>

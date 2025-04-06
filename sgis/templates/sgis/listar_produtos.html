@@ -7,15 +7,20 @@
 </head>
 <body>
     <div class="content">
-        <h2>Listar Produtos</h2>
+        <h2>Posição de Estoque</h2>
         
+        <!-- 🔔 Exibição de mensagens de sucesso/erro -->
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                        {{ message }}
+                    </li>
                 {% endfor %}
             </ul>
         {% endif %}
+
+        <!-- 📋 Tabela de Produtos -->
         <table>
             <thead>
                 <tr>
@@ -25,24 +30,60 @@
                     <th>Quantidade</th>
                     <th>Valor Unitário</th>
                     <th>Valor Total</th>
-                    <th>Estoque Total</th>  </tr>
+                    <th>Estoque Total</th>
+                </tr>
             </thead>
             <tbody>
+
+                <!-- 🔁 Loop dos produtos com estoque -->
                 {% for item in produtos_com_estoque %}
+
+                    <!-- 🟩 Linha destacando o nome do produto -->
+                    <tr style="background-color: #f0f0f0;">
+                        <td colspan="7" class="text-center font-weight-bold">
+                            {{ item.produto.descricao }}
+                        </td>
+                    </tr>
+
+                    <!-- 🔄 Loop das entradas de estoque por produto -->
                     {% for entrada in item.detalhes_entradas %}
                         <tr>
+                            <!-- ✅ Repetição do nome (opcional, pode ser removida se for redundante) -->
                             <td>{{ item.produto.descricao }}</td>
+
+                            <!-- 📦 Lote do produto -->
                             <td>{% if entrada.lote %}{{ entrada.lote }}{% else %}Sem lote{% endif %}</td>
+
+                            <!-- ⏳ Validade -->
                             <td>{% if entrada.validade %}{{ entrada.validade|date:"d/m/Y" }}{% else %}Sem validade{% endif %}</td>
+
+                            <!-- 🔢 Quantidade -->
                             <td>{{ entrada.quantidade }}</td>
+
+                            <!-- 💰 Valor unitário -->
                             <td>{{ entrada.valor_unitario }}</td>
+
+                            <!-- 💵 Valor total calculado -->
                             <td>{{ entrada.valor_total }}</td>
-                            <td>{{ item.produto.estoque }}</td>  </tr>
+
+                            <!-- (vazio por enquanto) -->
+                            <td></td>
+                        </tr>
                     {% endfor %}
+                    
+                    <!-- 📦 Total em estoque por produto -->
+                    <tr style="background-color: #d4edda;">
+                        <td colspan="6" class="font-weight-bold text-right">Total em Estoque:</td>
+                        <td class="font-weight-bold">{{ item.total_estoque }}</td>
+                    </tr>
+
                 {% endfor %}
             </tbody>
         </table>
+
         <br>
+
+        <!-- 🔙 Botão de voltar -->
         <a href="{% url 'home' %}" class="home-button">Voltar para Home</a>
     </div>
 </body>

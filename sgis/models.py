@@ -41,7 +41,7 @@ class Produto(models.Model):
 class Estoque(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='estoques')
     quantidade = models.IntegerField()
-    ultima_atualizacao = models.DateTimeField(auto_now=True)
+    ultima_atualizacao = models.DateTimeField(auto_now_add=True)
 
 from django.db import models
 
@@ -67,38 +67,40 @@ class NotaFiscal(models.Model):
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     data_nota = models.DateField(verbose_name="Data da Nota Fiscal")
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", default=0.00)
-    numero_nota_fiscal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Número da Nota Fiscal")
+    numero_nota_fiscal = models.CharField(max_length=20, verbose_name="Número da Nota Fiscal", default=000)
+
     
 
     def __str__(self):
-        return f"Nota Fiscal {self.id} - {self.fornecedor.nome}"
+        return f"Nota Fiscal {self.numero_nota_fiscal} - {self.fornecedor.nome}"
 
 import datetime
+from django.utils import timezone
+
 
 class EntradaEstoque(models.Model):
+    nota_fiscal = models.ForeignKey(NotaFiscal, on_delete=models.CASCADE)  # Apenas uma vez
+    data_entrada = models.DateField(default=timezone.now)
     
-    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
-    quantidade = models.IntegerField()
-    lote = models.CharField(max_length=50, blank=True, null=True)
-    validade = models.DateField(default=datetime.date.today)
-    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Unitário", default=0.00)
-    nota_fiscal = models.ForeignKey('NotaFiscal', on_delete=models.CASCADE, null=True, blank=True)  # Relacionando com NotaFiscal
-    
-    def valor_total(self):
-        return self.quantidade * self.valor_unitario
 
     def __str__(self):
-        return f"{self.produto.descricao} - Quantidade: {self.quantidade}"
+        return f"Entrada {self.id} - {self.nota_fiscal}"
+      
     
 class ItemEntradaEstoque(models.Model):
     entrada = models.ForeignKey(EntradaEstoque, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
+    lote = models.CharField(max_length=100) 
     quantidade = models.IntegerField()
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-    validade = models.DateField()
+    validade = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.produto.descricao} - {self.quantidade}"
+
+    @property
+    def valor_total(self):
+        return self.quantidade * self.valor_unitario
 
 
 from django.db import models
