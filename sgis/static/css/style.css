@@ -149,8 +149,26 @@ body {
     cursor: pointer;
     padding: 10px 20px;
     margin-top: 20px; /* Adicionado margem */
-    margin-bottom: 20;
+    margin-bottom: 20px;
     text-decoration: none;
+    font-size: 16px;
+    width: 164.52px;
+    height: 38 px;
+}
+
+.adicionar_produto{
+    background-color: #0c8d22;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin-top: 20px; /* Adicionado margem */
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    width: 164.52px;
+    height: 38 px;
 }
 
 .custom-success-btn {

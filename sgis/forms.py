@@ -96,18 +96,29 @@ ItemEntradaEstoqueFormSet = modelformset_factory(
 )
 
 from django import forms
-from .models import Dispensacao
+from .models import Dispensacao, Produto
+from django.forms import modelformset_factory
 
 class DispensacaoForm(forms.ModelForm):
     class Meta:
         model = Dispensacao
         fields = '__all__'
+        exclude = ['valor_total']
 
+    def __init__(self, *args, **kwargs):
+        super(DispensacaoForm, self).__init__(*args, **kwargs)
+        self.fields['produto'].queryset = Produto.objects.filter(estoque__gt=0)
+
+DispensacaoFormSet = modelformset_factory(Dispensacao, form=DispensacaoForm, extra=1)
 
 from django import forms
-from .models import SaidaEstoque
+from .models import SaidaEstoque, Produto
 
 class SaidaEstoqueForm(forms.ModelForm):
     class Meta:
         model = SaidaEstoque
         fields = ['produto', 'quantidade', 'motivo']
+
+    def __init__(self, *args, **kwargs):
+        super(SaidaEstoqueForm, self).__init__(*args, **kwargs)
+        self.fields['produto'].queryset = Produto.objects.filter(estoque__gt=0)

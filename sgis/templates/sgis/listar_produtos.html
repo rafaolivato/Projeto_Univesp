@@ -47,7 +47,7 @@
 
                     <!-- 🔄 Loop das entradas de estoque por produto -->
                     {% for entrada in item.detalhes_entradas %}
-                        <tr>
+                        <tr {% if entrada.proximo_vencimento %} style="background-color: #fff3cd;" {% endif %}>
                             <!-- ✅ Repetição do nome (opcional, pode ser removida se for redundante) -->
                             <td>{{ item.produto.descricao }}</td>
 
@@ -55,7 +55,16 @@
                             <td>{% if entrada.lote %}{{ entrada.lote }}{% else %}Sem lote{% endif %}</td>
 
                             <!-- ⏳ Validade -->
-                            <td>{% if entrada.validade %}{{ entrada.validade|date:"d/m/Y" }}{% else %}Sem validade{% endif %}</td>
+                            <td>
+                                {% if entrada.validade %}
+                                    {{ entrada.validade|date:"d/m/Y" }}
+                                    {% if entrada.proximo_vencimento %}
+                                        <strong style="color: red;">(⚠️ Próximo do vencimento!)</strong>
+                                    {% endif %}
+                                {% else %}
+                                    Sem validade
+                                {% endif %}
+                            </td>
 
                             <!-- 🔢 Quantidade -->
                             <td>{{ entrada.quantidade }}</td>

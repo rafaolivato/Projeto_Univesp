@@ -43,16 +43,7 @@ class Estoque(models.Model):
     quantidade = models.IntegerField()
     ultima_atualizacao = models.DateTimeField(auto_now_add=True)
 
-from django.db import models
 
-class Dispensacao(models.Model):
-    paciente = models.ForeignKey('Paciente', on_delete=models.CASCADE, blank=True, null=True)
-    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
-    quantidade = models.IntegerField()
-    data_hora = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.produto.descricao} - {self.quantidade} unidades"
 
 class Fornecedor(models.Model):
     nome = models.CharField(max_length=250)
@@ -92,8 +83,15 @@ class ItemEntradaEstoque(models.Model):
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     lote = models.CharField(max_length=100) 
     quantidade = models.IntegerField()
+    quantidade_disponivel = models.IntegerField(default=0) 
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     validade = models.DateField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        # Ao criar, definir quantidade_disponivel igual à quantidade total
+        if not self.pk:
+            self.quantidade_disponivel = self.quantidade
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.produto.descricao} - {self.quantidade}"
@@ -104,12 +102,27 @@ class ItemEntradaEstoque(models.Model):
 
 
 from django.db import models
+from decimal import Decimal
 
 class SaidaEstoque(models.Model):
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     motivo = models.TextField()
     data_saida = models.DateTimeField(auto_now_add=True)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))  # Novo campo
 
     def __str__(self):
         return f'{self.produto.descricao} - {self.quantidade}'
+
+
+class Dispensacao(models.Model):
+    paciente = models.ForeignKey('Paciente', on_delete=models.CASCADE, blank=True, null=True)
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
+    quantidade = models.IntegerField()
+    data_hora = models.DateTimeField(auto_now_add=True)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))  # Novo campo
+
+    def __str__(self):
+        return f"{self.produto.descricao} - {self.quantidade} unidades"
+
+
